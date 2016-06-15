@@ -28,7 +28,7 @@ void setup() {
   printArray(Serial.list());
   
   // Open the port you are using at the rate you want:
-  arduino = new Serial(this, Serial.list()[0], 115200);
+  arduino = new Serial(this, Serial.list()[0], 9600);
   arduino.clear();
   arduino.write(" 1c250w");
 }
@@ -50,34 +50,15 @@ void draw() {
     if (skeleton.isTracked()) {
       KJoint[] joints = skeleton.getJoints();
       
-      /// printing values on the screen
-      fill(255,0,0);
-      textSize(16);
+      // Do demo stuff
+      demoStuff();
       
-      // read the x,y,z value from the left and right hand
-      float lefthandX = joints[KinectPV2.JointType_HandLeft].getX();
-      float lefthandY = joints[KinectPV2.JointType_HandLeft].getY();
-      float lefthandZ = joints[KinectPV2.JointType_HandLeft].getZ();
+      // Insert your stuff here
       
-      float righthandX = joints[KinectPV2.JointType_HandRight].getX();
-      float righthandY = joints[KinectPV2.JointType_HandRight].getY();
-      float righthandZ = joints[KinectPV2.JointType_HandRight].getZ();
       
-      // print this as text (or use these values as input for your lighting installation)
-      text = "Left hand: ";
-      text += "\nx: " + lefthandX;
-      text += "\ny: " + lefthandY;
-      text += "\nz: " + lefthandZ;
-      text += "\nRight hand: ";
-      text += "\nx: " + righthandX;
-      text += "\ny: " + righthandY;
-      text += "\nz: " + righthandZ;
-      text(text,10,30);
-
-      // //  // How to start:// // // // // // // // // // // // // // // // // //
+      // //  // How to get started: // // // // // // // // // // // // // // // //
       // Get data from the kinect by calling this function: 
-      // joints[KinectPV2.JointType_HandLeft].getX();
-      // This returns the x position of your left hand.
+      float myValue = joints[KinectPV2.JointType_HandLeft].getX(); // This returns the x position of your left hand.
       //
       // //  // How to more data:  // // // // // // // // // // // // // // // //
       // Replace 'getX' with 'getY' or 'getZ' to get the Y or Z values.
@@ -108,7 +89,35 @@ void draw() {
       // // Hands
       // JointType_HandTipLeft, JointType_HandTipRight, JointType_FootLeft, JointType_FootRight, JointType_ThumbLeft, JointType_ThumbRight
       // // // // // // // // // // // // // // // // // // // // // // // //
+    }
+  }
+}
 
+void demoStuff() {
+       
+      /// printing values on the screen
+      fill(255,0,0);
+      textSize(16);
+      
+      // read the x,y,z value from the left and right hand
+      float lefthandX = joints[KinectPV2.JointType_HandLeft].getX();
+      float lefthandY = joints[KinectPV2.JointType_HandLeft].getY();
+      float lefthandZ = joints[KinectPV2.JointType_HandLeft].getZ();
+      
+      float righthandX = joints[KinectPV2.JointType_HandRight].getX();
+      float righthandY = joints[KinectPV2.JointType_HandRight].getY();
+      float righthandZ = joints[KinectPV2.JointType_HandRight].getZ();
+      
+      // print this as text (or use these values as input for your lighting installation)
+      text = "Left hand: ";
+      text += "\nx: " + lefthandX;
+      text += "\ny: " + lefthandY;
+      text += "\nz: " + lefthandZ;
+      text += "\nRight hand: ";
+      text += "\nx: " + righthandX;
+      text += "\ny: " + righthandY;
+      text += "\nz: " + righthandZ;
+      text(text,10,30);
 
       // set the intensity according to the distance between your hands
       float dX = abs(lefthandX - righthandX); 
@@ -133,15 +142,14 @@ void draw() {
       
       // I added some extra lamps for a dramatic effect. FUN!
       for(int c = 5; c < 25;c++) {
-        if(c%4 == 0) arduino.write(c + "c" + intensity + "w");
-        if(c%4 == 1) arduino.write(c + "c" + red + "w");
-        if(c%4 == 2) arduino.write(c + "c" + green + "w");
-        if(c%4 == 3) arduino.write(c + "c" + blue + "w");
+        int channel = c + 1;
+        if(c%4 == 0) arduino.write(channel + "c" + intensity + "w");
+        if(c%4 == 1) arduino.write(channel + "c" + red + "w");
+        if(c%4 == 2) arduino.write(channel + "c" + green + "w");
+        if(c%4 == 3) arduino.write(channel + "c" + blue + "w");
       }
       
       //println("handX: " + handX + "red: " + red + "handY: " + handY + "green: " + green);
       //println("handZ: " + handZ + "blue: " + blue);
       println(distance);
-    }
-  }
 }
