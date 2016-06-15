@@ -54,8 +54,7 @@ void draw() {
       demoStuff();
       
       // Insert your stuff here
-      
-      
+            
       // //  // How to get started: // // // // // // // // // // // // // // // //
       // Get data from the kinect by calling this function: 
       float myValue = joints[KinectPV2.JointType_HandLeft].getX(); // This returns the x position of your left hand.
