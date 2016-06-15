@@ -3,6 +3,7 @@ import KinectPV2.*;
 import processing.serial.*;
 
 KinectPV2 kinect;
+KJoint[] joints;
 
 float zVal = 300;
 float rotX = PI;
@@ -48,7 +49,7 @@ void draw() {
     
     KSkeleton skeleton = (KSkeleton) skeletonArray.get(i);
     if (skeleton.isTracked()) {
-      KJoint[] joints = skeleton.getJoints();
+      joints = skeleton.getJoints();
       
       // Do demo stuff
       demoStuff();
@@ -93,62 +94,61 @@ void draw() {
 }
 
 void demoStuff() {
-       
-      /// printing values on the screen
-      fill(255,0,0);
-      textSize(16);
-      
-      // read the x,y,z value from the left and right hand
-      float lefthandX = joints[KinectPV2.JointType_HandLeft].getX();
-      float lefthandY = joints[KinectPV2.JointType_HandLeft].getY();
-      float lefthandZ = joints[KinectPV2.JointType_HandLeft].getZ();
-      
-      float righthandX = joints[KinectPV2.JointType_HandRight].getX();
-      float righthandY = joints[KinectPV2.JointType_HandRight].getY();
-      float righthandZ = joints[KinectPV2.JointType_HandRight].getZ();
-      
-      // print this as text (or use these values as input for your lighting installation)
-      text = "Left hand: ";
-      text += "\nx: " + lefthandX;
-      text += "\ny: " + lefthandY;
-      text += "\nz: " + lefthandZ;
-      text += "\nRight hand: ";
-      text += "\nx: " + righthandX;
-      text += "\ny: " + righthandY;
-      text += "\nz: " + righthandZ;
-      text(text,10,30);
+    /// printing values on the screen
+    fill(255,0,0);
+    textSize(16);
+    
+    // read the x,y,z value from the left and right hand
+    float lefthandX = joints[KinectPV2.JointType_HandLeft].getX();
+    float lefthandY = joints[KinectPV2.JointType_HandLeft].getY();
+    float lefthandZ = joints[KinectPV2.JointType_HandLeft].getZ();
+    
+    float righthandX = joints[KinectPV2.JointType_HandRight].getX();
+    float righthandY = joints[KinectPV2.JointType_HandRight].getY();
+    float righthandZ = joints[KinectPV2.JointType_HandRight].getZ();
+    
+    // print this as text (or use these values as input for your lighting installation)
+    text = "Left hand: ";
+    text += "\nx: " + lefthandX;
+    text += "\ny: " + lefthandY;
+    text += "\nz: " + lefthandZ;
+    text += "\nRight hand: ";
+    text += "\nx: " + righthandX;
+    text += "\ny: " + righthandY;
+    text += "\nz: " + righthandZ;
+    text(text,10,30);
 
-      // set the intensity according to the distance between your hands
-      float dX = abs(lefthandX - righthandX); 
-      float dY = abs(lefthandY - righthandY);
-      float dZ = abs(lefthandZ - righthandZ);
-      float distance = sqrt(pow(sqrt(dX*dX + dY*dY), 2) + dZ*dZ);
-      int intensity = int(distance * 125);
-      arduino.write("1c" + intensity + "w");
+    // set the intensity according to the distance between your hands
+    float dX = abs(lefthandX - righthandX); 
+    float dY = abs(lefthandY - righthandY);
+    float dZ = abs(lefthandZ - righthandZ);
+    float distance = sqrt(pow(sqrt(dX*dX + dY*dY), 2) + dZ*dZ);
+    int intensity = int(distance * 125);
+    arduino.write("1c" + intensity + "w");
 
-      //draw different color for each hand state
-      float handX = joints[KinectPV2.JointType_HandRight].getX();
-      int red = int((handX + 1) * 125);
-      arduino.write("2c" + red + "w");
-      
-      float handY = joints[KinectPV2.JointType_HandRight].getY();
-      int green = int((handY + 1) * 125);
-      arduino.write("3c" + green + "w");
-      
-      float handZ = joints[KinectPV2.JointType_HandRight].getZ();
-      int blue = int((handZ) * 75);
-      arduino.write("4c" + blue + "w");
-      
-      // I added some extra lamps for a dramatic effect. FUN!
-      for(int c = 5; c < 25;c++) {
-        int channel = c + 1;
-        if(c%4 == 0) arduino.write(channel + "c" + intensity + "w");
-        if(c%4 == 1) arduino.write(channel + "c" + red + "w");
-        if(c%4 == 2) arduino.write(channel + "c" + green + "w");
-        if(c%4 == 3) arduino.write(channel + "c" + blue + "w");
-      }
-      
-      //println("handX: " + handX + "red: " + red + "handY: " + handY + "green: " + green);
-      //println("handZ: " + handZ + "blue: " + blue);
-      println(distance);
+    //draw different color for each hand state
+    float handX = joints[KinectPV2.JointType_HandRight].getX();
+    int red = int((handX + 1) * 125);
+    arduino.write("2c" + red + "w");
+    
+    float handY = joints[KinectPV2.JointType_HandRight].getY();
+    int green = int((handY + 1) * 125);
+    arduino.write("3c" + green + "w");
+    
+    float handZ = joints[KinectPV2.JointType_HandRight].getZ();
+    int blue = int((handZ) * 75);
+    arduino.write("4c" + blue + "w");
+    
+    // I added some extra lamps for a dramatic effect. FUN!
+    for(int c = 5; c < 25;c++) {
+      int channel = c + 1;
+      if(c%4 == 0) arduino.write(channel + "c" + intensity + "w");
+      if(c%4 == 1) arduino.write(channel + "c" + red + "w");
+      if(c%4 == 2) arduino.write(channel + "c" + green + "w");
+      if(c%4 == 3) arduino.write(channel + "c" + blue + "w");
+    }
+    
+    //println("handX: " + handX + "red: " + red + "handY: " + handY + "green: " + green);
+    //println("handZ: " + handZ + "blue: " + blue);
+    println(distance);
 }
